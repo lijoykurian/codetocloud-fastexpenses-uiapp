@@ -1,0 +1,53 @@
+<div fxLayout="column" fxLayoutGap="20px" class="container" *ngIf="empInfo!=undefined&&empInfo!=null">
+        <div fxLayout fxLayoutGap="20px" >
+  <mat-card class="card" >
+        <mat-card-header>
+         <mat-card-title>  Employee Info</mat-card-title> 
+        </mat-card-header>      
+        <mat-card-content  fxLayout="column" fxLayoutAlign="center" fxLayoutGap="20px" >
+                <div fxLayout fxLayoutGap="20px" class="mat-card-content" >
+                        <div class="label" >Id</div> 
+                        <div >{{empInfo.empId}}</div>
+                    </div>
+                    <div fxLayout fxLayoutGap="20px" class="mat-card-content" >
+                            <div class="label" >Name</div> 
+                            <div >{{empInfo.empName}}</div>
+                    </div>
+                    <div fxLayout fxLayoutGap="20px" class="mat-card-content" >
+                            <div class="label" >Email</div> 
+                            <div >{{empInfo.empEmail}}</div>
+                    </div>
+        </mat-card-content>
+  </mat-card>
+</div>
+
+<div fxLayout fxLayoutGap="20px" >
+        <mat-card class="card" >
+              <mat-card-header>
+               <mat-card-title>  Organization Info</mat-card-title> 
+              </mat-card-header>      
+              <mat-card-content  fxLayout="column" fxLayoutAlign="center" fxLayoutGap="20px" >
+                      <div fxLayout fxLayoutGap="20px" class="mat-card-content" >
+                              <div class="label" > Name</div> 
+                              <div >{{empInfo.organization.name}}</div>
+                          </div>
+   
+              </mat-card-content>
+        </mat-card>
+      </div>
+
+      <div fxLayout fxLayoutGap="20px" >
+            <mat-card class="card" >
+                  <mat-card-header>
+                   <mat-card-title>  Expenses Allowed</mat-card-title> 
+                  </mat-card-header>      
+                  <mat-card-content  fxLayout="column" fxLayoutAlign="center" fxLayoutGap="20px" >
+                          <div fxLayout fxLayoutGap="20px" class="mat-card-content" >
+                                  <div class="label" *ngFor="let expense of empInfo.allowedExpenses" > {{expense}}</div> 
+ 
+                              </div>
+
+                  </mat-card-content>
+            </mat-card>
+          </div>     
+        </div>

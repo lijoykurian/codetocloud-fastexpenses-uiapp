@@ -1,0 +1,11 @@
+.sidenav{
+    width:250px;
+   
+}
+
+.main{
+    width: calc(100% - 250px)
+}
+.mainarea{
+    height: calc(100% - 64px)!important
+}

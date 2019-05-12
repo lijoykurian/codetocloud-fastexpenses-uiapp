@@ -1,0 +1,55 @@
+trigger:
+- development
+resources:
+  containers:
+  - container: nodebuilder
+    image: jilsan-node-builder:8.15.1
+    endpoint: acr
+  - container: nginximagebuilder
+    image: jilsan-nginx-image-builder:1.0.0
+    endpoint: acr
+variables:
+  path_to_artifacts: $(System.ArtifactsDirectory)/fastexpenses
+  artifact_name: release-$(Build.BuildNumber).zip
+  app_name: fastexpensesapp
+  docker-repository: jilsanregistries.azurecr.io/fastexpenses 
+jobs: 
+  - job: BuildFastExpensesApp
+    pool:
+        name: Hosted Ubuntu 1604
+    container : nodebuilder
+    steps:
+          - script: npm ci
+            displayName: npm ci 
+          - script: ng build --prod
+            displayName: build 
+          - script: cd dist/codetocloud-ui-app/ &&zip -r -j release-$(Build.BuildNumber).zip *
+            displayName: zip 
+          - script: cp dist/codetocloud-ui-app/release-$(Build.BuildNumber).zip $(Build.ArtifactStagingDirectory)
+            displayName: copy to artifacts folder
+          - task: PublishBuildArtifacts@1
+            inputs:
+              pathtoPublish: $(Build.ArtifactStagingDirectory)
+              artifactName: fastexpenses
+            displayName: Publish
+  - job: BuildFastExpensesContainer
+    pool:
+        name: Hosted Ubuntu 1604
+    container : nginximagebuilder
+    steps:
+          - task: DownloadBuildArtifacts@0
+            inputs:
+              downloadPath: '$(System.ArtifactsDirectory)' 
+              artifactName: fastexpenses      
+            displayName: download artifact
+          - script: build        
+            displayName: Build Image
+          - script: docker tag $(app_name):$(Build.BuildNumber) $(docker-repository)/$(app_name):$(Build.BuildNumber)
+            displayName: Tag Image
+          - script: docker login jilsanregistries.azurecr.io -u $(acrusername) -p $(acrpassword)
+            displayName: Docker Login
+          - script: docker push $(docker-repository)/$(app_name):$(Build.BuildNumber)
+            displayName: Push to ACR
+    dependsOn: BuildFastExpensesApp
+    condition: succeeded()               
+
